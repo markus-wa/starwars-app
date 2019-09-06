@@ -10,11 +10,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
-    <Button
+    <ToggleButton
             android:text="@string/like"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/like_button"
+            android:textOff="@string/like"
+            android:textOn="@string/unlike"
             android:layout_weight="1" />
 
 </LinearLayout>

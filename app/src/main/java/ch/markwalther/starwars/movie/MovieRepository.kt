@@ -1,9 +1,15 @@
 package ch.markwalther.starwars.movie
 
-class MovieRepository {
+import ch.markwalther.starwars.api.MovieService
 
-    var client: MovieService = RetrofitClient.movieService
+class MovieRepository(
+	private val service: MovieService
+) {
 
-    suspend fun all() = client.all()
+	suspend fun all() = service.all()
+
+	fun storeLike(id: Int, checked: Boolean) {
+		TODO("storeLike is not implemented")
+	}
 
 }

@@ -1,8 +1,10 @@
 <resources>
-    <string name="app_name">starwars</string>
+    <string name="app_name">Star Wars</string>
     <string name="title_movies">Movies</string>
     <string name="title_characters">Characters</string>
     <string name="title_planets">Planets</string>
     <string name="like">Like</string>
     <string name="title">Title</string>
+    <string name="liked_only">Liked Only</string>
+    <string name="unlike">Unlike</string>
 </resources>

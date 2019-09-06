@@ -4,11 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import kotlinx.coroutines.Dispatchers
 
-class MovieViewModel : ViewModel() {
-    private val repository: MovieRepository = MovieRepository()
+class MovieViewModel(
+	private val repository: MovieRepository
+) : ViewModel() {
 
-    val all = liveData(Dispatchers.IO) {
-        emit(repository.all())
-    }
+	val all = liveData(Dispatchers.IO) {
+		emit(repository.all())
+	}
 
 }

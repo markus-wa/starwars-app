@@ -1,61 +1,76 @@
 package ch.markwalther.starwars
 
 import android.os.Bundle
+import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import ch.markwalther.starwars.api.Model
+import ch.markwalther.starwars.movie.MovieListAdapter
 import ch.markwalther.starwars.movie.MovieViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import org.koin.android.ext.android.inject
 
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var viewManager: RecyclerView.LayoutManager
 
-    private val onNavigationItemSelectedListener =
-        BottomNavigationView.OnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.navigation_home -> {
-                    //textMessage.setText(R.string.title_movies)
-                    return@OnNavigationItemSelectedListener true
-                }
-                R.id.navigation_dashboard -> {
-                    //textMessage.setText(R.string.title_characters)
-                    return@OnNavigationItemSelectedListener true
-                }
-                R.id.navigation_notifications -> {
-                    //textMessage.setText(R.string.title_planets)
-                    return@OnNavigationItemSelectedListener true
-                }
-            }
-            false
-        }
+	private lateinit var adapter: MainListAdapter<out Model.Likeable>
+	private lateinit var recyclerView: RecyclerView
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+	private val movieViewModel: MovieViewModel by inject()
 
-        // nav
-        val navView: BottomNavigationView = findViewById(R.id.nav_view)
-        navView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
+	private val onNavigationItemSelectedListener =
+		BottomNavigationView.OnNavigationItemSelectedListener { item ->
+			when (item.itemId) {
+				R.id.navigation_movies -> {
+					loadMovies()
+					return@OnNavigationItemSelectedListener true
+				}
+				R.id.navigation_characters -> {
+					loadCharacters()
+					return@OnNavigationItemSelectedListener true
+				}
+			}
+			false
+		}
 
-        // recycler view
-        viewManager = LinearLayoutManager(this)
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		setContentView(R.layout.activity_main)
 
-        recyclerView = findViewById<RecyclerView>(R.id.main_recycler_view).apply {
-            // use this setting to improve performance if you know that changes
-            // in content do not change the layout size of the RecyclerView
-            setHasFixedSize(true)
+		// nav
+		val navView: BottomNavigationView = findViewById(R.id.nav_view)
+		navView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
 
-            // use a linear layout manager
-            layoutManager = viewManager
-        }
+		// recycler view
+		recyclerView = findViewById<RecyclerView>(R.id.main_recycler_view).apply {
+			// use this setting to improve performance if you know that changes
+			// in content do not change the layout size of the RecyclerView
+			setHasFixedSize(true)
 
-        val viewModel = MovieViewModel()
-        viewModel.all.observe(this, Observer { movies ->
-            recyclerView.adapter = MainListAdapter(movies.results)
-        })
-    }
+			// use a linear layout manager
+			layoutManager = LinearLayoutManager(this@MainActivity)
+		}
+
+		// default tab is movies
+		loadMovies()
+
+		// liked-only switch
+		findViewById<Switch>(R.id.liked_only_switch).setOnCheckedChangeListener { _, isChecked ->
+			adapter.setFilterLikedOnly(isChecked)
+		}
+	}
+
+	private fun loadMovies() {
+		movieViewModel.all.observe(this, Observer { movies ->
+			adapter = MovieListAdapter(movies.results)
+			recyclerView.adapter = adapter
+		})
+	}
+
+	private fun loadCharacters() {
+		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+	}
 
 }
