@@ -1,4 +1,4 @@
-package ch.markwalther.starwars
+package ch.markwalther.starwars.likeable
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,8 +6,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.recyclerview.widget.RecyclerView
+import ch.markwalther.starwars.R
 
-class MainListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class LikeableListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
 	constructor(parent: ViewGroup) : this(
 		LayoutInflater.from(parent.context)
@@ -17,4 +18,5 @@ class MainListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 	val textView: TextView = itemView.findViewById(R.id.main_list_item_text)
 
 	val likeButton: ToggleButton = itemView.findViewById(R.id.like_button)
+
 }

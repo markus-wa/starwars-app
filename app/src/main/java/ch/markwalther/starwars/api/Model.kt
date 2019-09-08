@@ -3,6 +3,7 @@ package ch.markwalther.starwars.api
 object Model {
 
 	interface Likeable {
+		val id: Int
 		var liked: Boolean
 	}
 
@@ -10,7 +11,7 @@ object Model {
 		val results: List<Entry>
 	) {
 		data class Entry(
-			val id: Int,
+			override val id: Int,
 			val title: String,
 			override var liked: Boolean
 		) : Likeable

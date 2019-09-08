@@ -7,15 +7,18 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ch.markwalther.starwars.api.Model
+import ch.markwalther.starwars.likeable.LikeableListAdapter
 import ch.markwalther.starwars.movie.MovieListAdapter
 import ch.markwalther.starwars.movie.MovieViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
+import org.koin.core.qualifier.named
 
 
 class MainActivity : AppCompatActivity() {
 
-	private lateinit var adapter: MainListAdapter<out Model.Likeable>
+	private lateinit var adapter: LikeableListAdapter<out Model.Likeable>
 	private lateinit var recyclerView: RecyclerView
 
 	private val movieViewModel: MovieViewModel by inject()
@@ -64,7 +67,7 @@ class MainActivity : AppCompatActivity() {
 
 	private fun loadMovies() {
 		movieViewModel.all.observe(this, Observer { movies ->
-			adapter = MovieListAdapter(movies.results)
+			adapter = MovieListAdapter(get(named(LIKEABLE_BEAN_MOVIES)), movies.results)
 			recyclerView.adapter = adapter
 		})
 	}
