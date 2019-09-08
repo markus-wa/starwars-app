@@ -17,29 +17,40 @@ import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.core.qualifier.named
 
-
 class MainActivity : AppCompatActivity() {
 
-	private lateinit var adapter: LikeableListAdapter<out Model.Likeable>
-	private lateinit var recyclerView: RecyclerView
+	companion object {
+		const val KEY_LIKED_ONLY = "liked_only"
+		const val KEY_CURRENT_NAV_TAB = "current_nav_tab"
+	}
 
 	private val movieViewModel: MovieViewModel by inject()
 	private val characterViewModel: CharacterViewModel by inject()
 
+	private var currentNavTab = R.id.navigation_movies
+
+	private lateinit var adapter: LikeableListAdapter<out Model.Likeable>
+	private lateinit var recyclerView: RecyclerView
+
 	private val onNavigationItemSelectedListener =
 		BottomNavigationView.OnNavigationItemSelectedListener { item ->
-			when (item.itemId) {
-				R.id.navigation_movies -> {
-					loadMovies()
-					return@OnNavigationItemSelectedListener true
-				}
-				R.id.navigation_characters -> {
-					loadCharacters()
-					return@OnNavigationItemSelectedListener true
-				}
-			}
-			false
+			navigate(item.itemId)
 		}
+
+	private fun navigate(itemId: Int): Boolean {
+		currentNavTab = itemId
+		when (itemId) {
+			R.id.navigation_movies -> {
+				loadMovies()
+				return true
+			}
+			R.id.navigation_characters -> {
+				loadCharacters()
+				return true
+			}
+		}
+		return false
+	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -59,7 +70,8 @@ class MainActivity : AppCompatActivity() {
 			layoutManager = LinearLayoutManager(this@MainActivity)
 		}
 
-		// default tab is movies
+		adapter = MovieListAdapter(get(named(LIKEABLE_BEAN_MOVIES)), listOf())
+
 		loadMovies()
 
 		// liked-only switch
@@ -69,6 +81,9 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun loadMovies() {
+		// prevent data race
+		characterViewModel.all.removeObservers(this)
+
 		movieViewModel.all.observe(this, Observer { movies ->
 			setAdapter(
 				MovieListAdapter(
@@ -80,6 +95,9 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun loadCharacters() {
+		// prevent data race
+		movieViewModel.all.removeObservers(this)
+
 		characterViewModel.all.observe(this, Observer { characters ->
 			setAdapter(
 				CharacterListAdapter(
@@ -91,9 +109,23 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun setAdapter(newAdapter: LikeableListAdapter<out Model.Likeable>) {
-		newAdapter.setFilterLikedOnly(findViewById<Switch>(R.id.liked_only_switch).isChecked)
+		newAdapter.setFilterLikedOnly(likedOnly())
 		adapter = newAdapter
 		recyclerView.adapter = newAdapter
+	}
+
+	private fun likedOnly() = findViewById<Switch>(R.id.liked_only_switch).isChecked
+
+	override fun onSaveInstanceState(outState: Bundle) {
+		outState.putInt(KEY_CURRENT_NAV_TAB, currentNavTab)
+		outState.putBoolean(KEY_LIKED_ONLY, likedOnly())
+		super.onSaveInstanceState(outState)
+	}
+
+	override fun onRestoreInstanceState(inState: Bundle) {
+		super.onRestoreInstanceState(inState)
+		navigate(inState.getInt(KEY_CURRENT_NAV_TAB))
+		findViewById<Switch>(R.id.liked_only_switch).isChecked = inState.getBoolean(KEY_LIKED_ONLY)
 	}
 
 }
