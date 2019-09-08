@@ -1,4 +1,4 @@
-package ch.markwalther.starwars.movie
+package ch.markwalther.starwars.character
 
 import androidx.lifecycle.Observer
 import ch.markwalther.starwars.InstantTaskExecutorExtension
@@ -17,18 +17,18 @@ import org.junit.jupiter.api.extension.ExtendWith
 @ExperimentalCoroutinesApi
 @ExtendWith(InstantTaskExecutorExtension::class)
 @Disabled("flakey")
-internal class MovieViewModelTest {
+internal class CharacterViewModelTest {
 
 	@Test
 	fun getAll() {
 		Dispatchers.setMain(newSingleThreadContext("JUnit"))
-		val repo = mockk<MovieRepository>()
-		val expected = Model.MovieList(listOf(Model.MovieList.Entry(1, "JUnit", true)))
+		val repo = mockk<CharacterRepository>()
+		val expected = Model.CharacterList(listOf(Model.CharacterList.Entry(1, "JUnit", true)))
 		coEvery { repo.all() } returns expected
 
-		val observer = mockk<Observer<Model.MovieList>>()
+		val observer = mockk<Observer<Model.CharacterList>>()
 		every { observer.onChanged(any()) } just Runs
-		MovieViewModel(repo).all.observeForever(observer)
+		CharacterViewModel(repo).all.observeForever(observer)
 
 		verify(exactly = 1) { observer.onChanged(expected) }
 		confirmVerified(observer)

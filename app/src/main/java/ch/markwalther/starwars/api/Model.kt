@@ -21,6 +21,16 @@ object Model {
 		val title: String
 	)
 
+	data class CharacterList(
+		val results: List<Entry>
+	) {
+		data class Entry(
+			override val id: Int,
+			val name: String,
+			override var liked: Boolean
+		) : Likeable
+	}
+
 }
 
 

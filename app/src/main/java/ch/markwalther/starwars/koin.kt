@@ -3,6 +3,8 @@ package ch.markwalther.starwars
 import android.app.Application
 import android.content.Context
 import ch.markwalther.starwars.api.SWApiClient
+import ch.markwalther.starwars.character.CharacterRepository
+import ch.markwalther.starwars.character.CharacterViewModel
 import ch.markwalther.starwars.likeable.LikeableRepository
 import ch.markwalther.starwars.movie.MovieRepository
 import ch.markwalther.starwars.movie.MovieViewModel
@@ -19,10 +21,16 @@ const val LIKEABLE_BEAN_CHARACTERS = "characters"
 val koinStarWarsModule = module {
 	val swApiClient = SWApiClient("https://swapi.co/api/")
 	single { swApiClient.movieService }
-	single { MovieRepository(get()) }
+	single { swApiClient.characterService }
+
+	single { MovieRepository(get(), get(named(LIKEABLE_BEAN_MOVIES))) }
+	single { CharacterRepository(get(), get(named(LIKEABLE_BEAN_CHARACTERS))) }
+
 	single(named(LIKEABLE_BEAN_MOVIES)) { likeableRepo(androidApplication(), "movies") }
 	single(named(LIKEABLE_BEAN_CHARACTERS)) { likeableRepo(androidApplication(), "characters") }
+
 	viewModel { MovieViewModel(get()) }
+	viewModel { CharacterViewModel(get()) }
 }
 
 fun likeableRepo(androidApplication: Application, name: String): LikeableRepository {

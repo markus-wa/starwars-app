@@ -7,6 +7,8 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ch.markwalther.starwars.api.Model
+import ch.markwalther.starwars.character.CharacterListAdapter
+import ch.markwalther.starwars.character.CharacterViewModel
 import ch.markwalther.starwars.likeable.LikeableListAdapter
 import ch.markwalther.starwars.movie.MovieListAdapter
 import ch.markwalther.starwars.movie.MovieViewModel
@@ -22,6 +24,7 @@ class MainActivity : AppCompatActivity() {
 	private lateinit var recyclerView: RecyclerView
 
 	private val movieViewModel: MovieViewModel by inject()
+	private val characterViewModel: CharacterViewModel by inject()
 
 	private val onNavigationItemSelectedListener =
 		BottomNavigationView.OnNavigationItemSelectedListener { item ->
@@ -67,13 +70,30 @@ class MainActivity : AppCompatActivity() {
 
 	private fun loadMovies() {
 		movieViewModel.all.observe(this, Observer { movies ->
-			adapter = MovieListAdapter(get(named(LIKEABLE_BEAN_MOVIES)), movies.results)
-			recyclerView.adapter = adapter
+			setAdapter(
+				MovieListAdapter(
+					get(named(LIKEABLE_BEAN_MOVIES)),
+					movies.results
+				)
+			)
 		})
 	}
 
 	private fun loadCharacters() {
-		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+		characterViewModel.all.observe(this, Observer { characters ->
+			setAdapter(
+				CharacterListAdapter(
+					get(named(LIKEABLE_BEAN_CHARACTERS)),
+					characters.results
+				)
+			)
+		})
+	}
+
+	private fun setAdapter(newAdapter: LikeableListAdapter<out Model.Likeable>) {
+		newAdapter.setFilterLikedOnly(findViewById<Switch>(R.id.liked_only_switch).isChecked)
+		adapter = newAdapter
+		recyclerView.adapter = newAdapter
 	}
 
 }

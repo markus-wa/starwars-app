@@ -22,4 +22,8 @@ class SWApiClient(
 		retrofit.create(MovieService::class.java)
 	}
 
+	val characterService: CharacterService by lazy {
+		retrofit.create(CharacterService::class.java)
+	}
+
 }

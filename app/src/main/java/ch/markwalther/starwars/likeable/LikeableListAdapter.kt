@@ -25,7 +25,7 @@ abstract class LikeableListAdapter<T : Model.Likeable>(
 		holder.textView.text = getText(likeable)
 
 		holder.likeButton.setOnCheckedChangeListener(null)
-		holder.likeButton.isChecked = repository.isLiked(likeable.id)
+		holder.likeButton.isChecked = likeable.liked
 
 		holder.likeButton.setOnCheckedChangeListener { _, isChecked ->
 			likeable.liked = isChecked

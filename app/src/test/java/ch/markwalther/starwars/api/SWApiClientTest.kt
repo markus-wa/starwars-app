@@ -8,6 +8,7 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 internal class SWApiClientTest {
@@ -53,6 +54,40 @@ internal class SWApiClientTest {
 				)
 			)
 		)
+	}
+
+	@Nested
+	inner class CharacterService {
+
+		@Test
+		fun all() {
+			wireMock.stubFor(
+				get(urlEqualTo("/api/people"))
+					.willReturn(
+						aResponse()
+							.withHeader("Content-Type", "text/json")
+							.withStatus(200)
+							.withBodyFile("json/people.json")
+					)
+			)
+
+			val client = SWApiClient("http://localhost:" + wireMock.port() + "/api/")
+			val result = runBlocking { client.characterService.all() }
+
+			val first5Characters = result.copy(results = result.results.subList(0, 5))
+			assertThat(first5Characters).isEqualTo(
+				Model.CharacterList(
+					listOf(
+						Model.CharacterList.Entry(0, "Luke Skywalker", false),
+						Model.CharacterList.Entry(0, "C-3PO", false),
+						Model.CharacterList.Entry(0, "R2-D2", false),
+						Model.CharacterList.Entry(0, "Darth Vader", false),
+						Model.CharacterList.Entry(0, "Leia Organa", false)
+					)
+				)
+			)
+		}
+
 	}
 
 }

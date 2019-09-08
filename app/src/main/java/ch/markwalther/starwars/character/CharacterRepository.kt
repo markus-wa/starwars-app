@@ -1,15 +1,15 @@
-package ch.markwalther.starwars.movie
+package ch.markwalther.starwars.character
 
+import ch.markwalther.starwars.api.CharacterService
 import ch.markwalther.starwars.api.Model
-import ch.markwalther.starwars.api.MovieService
 import ch.markwalther.starwars.likeable.LikeableRepository
 
-class MovieRepository(
-	private val service: MovieService,
+class CharacterRepository(
+	private val service: CharacterService,
 	private val likeableRepo: LikeableRepository
 ) {
 
-	suspend fun all(): Model.MovieList {
+	suspend fun all(): Model.CharacterList {
 		val apiRes = service.all()
 		val indexedResult = apiRes.results.mapIndexed { i, it ->
 			// results are ordered by release date and the index (starting at 1) represents the ID
