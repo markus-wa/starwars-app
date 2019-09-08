@@ -29,6 +29,7 @@ internal class MovieViewModelTest {
 		MovieViewModel(repo).all.observeForever(observer)
 
 		verify(exactly = 1) { observer.onChanged(expected) }
+		confirmVerified(observer)
 	}
 
 }
