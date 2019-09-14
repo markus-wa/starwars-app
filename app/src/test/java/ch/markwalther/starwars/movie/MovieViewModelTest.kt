@@ -26,11 +26,11 @@ internal class MovieViewModelTest {
 		val expected = Model.MovieList(listOf(Model.MovieList.Entry(1, "JUnit", true)))
 		coEvery { repo.all() } returns expected
 
-		val observer = mockk<Observer<Model.MovieList>>()
+		val observer = mockk<Observer<List<Model.MovieList.Entry>>>()
 		every { observer.onChanged(any()) } just Runs
 		MovieViewModel(repo).all.observeForever(observer)
 
-		verify(exactly = 1) { observer.onChanged(expected) }
+		verify(exactly = 1) { observer.onChanged(expected.results) }
 		confirmVerified(observer)
 	}
 
