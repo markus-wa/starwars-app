@@ -79,8 +79,8 @@ val koinStarWarsModule = module {
 		)
 	}
 
-	viewModel(named(Bean.ViewModel.MOVIE)) { MovieViewModel(get()) }
-	viewModel(named(Bean.ViewModel.CHARACTERS)) { CharacterViewModel(get()) }
+	viewModel { MovieViewModel(get()) }
+	viewModel { CharacterViewModel(get()) }
 }
 
 fun likeableRepo(androidApplication: Application, name: String): LikeableRepository {

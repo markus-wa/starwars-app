@@ -10,6 +10,8 @@ class MovieViewModel(
 	private val repository: MovieRepository
 ) : ViewModel(), LikeableViewModel<Model.MovieList.Entry> {
 
+	override var displayLikedOnly = false
+
 	override val all = liveData(Dispatchers.IO) {
 		emit(repository.all().results)
 	}

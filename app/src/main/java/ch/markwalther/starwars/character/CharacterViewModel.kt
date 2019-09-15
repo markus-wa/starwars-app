@@ -10,6 +10,8 @@ class CharacterViewModel(
 	private val repository: CharacterRepository
 ) : ViewModel(), LikeableViewModel<Model.CharacterList.Entry> {
 
+	override var displayLikedOnly = false
+
 	override val all = liveData(Dispatchers.IO) {
 		emit(repository.all().results)
 	}

@@ -57,8 +57,11 @@ abstract class LikeableListFragment<T : Model.Likeable> : Fragment() {
 
 		// liked-only switch
 		likedOnlySwich.setOnCheckedChangeListener { _, isChecked ->
+			viewModel.displayLikedOnly = isChecked
 			adapter.displayLikedOnly = isChecked
 		}
+
+		likedOnlySwich.isChecked = viewModel.displayLikedOnly
 	}
 
 	private fun loadData() {
