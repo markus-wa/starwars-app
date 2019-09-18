@@ -71,7 +71,7 @@ abstract class LikeableListFragment<T : Model.Likeable> : Fragment() {
 	}
 
 	override fun onSaveInstanceState(outState: Bundle) {
-		outState.putBoolean(Key.LIKED_ONLY, likedOnlySwich.isChecked)
+		outState.putBoolean(Key.LIKED_ONLY, viewModel.displayLikedOnly)
 		super.onSaveInstanceState(outState)
 	}
 
