@@ -23,10 +23,10 @@ internal class CharacterViewModelTest {
 	fun getAll() {
 		Dispatchers.setMain(newSingleThreadContext("JUnit"))
 		val repo = mockk<CharacterRepository>()
-		val expected = Model.CharacterList(listOf(Model.CharacterList.Entry(1, "JUnit", true)))
-		coEvery { repo.all() } returns expected
+		val expected = listOf(Model.CharacterList.Entry(1, "JUnit", true))
+		coEvery { repo.all() } returns Model.CharacterList(expected)
 
-		val observer = mockk<Observer<Model.CharacterList>>()
+		val observer = mockk<Observer<List<Model.CharacterList.Entry>>>()
 		every { observer.onChanged(any()) } just Runs
 		CharacterViewModel(repo).all.observeForever(observer)
 
