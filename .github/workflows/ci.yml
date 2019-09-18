@@ -1,0 +1,14 @@
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: MrRamych/gradle-actions/openjdk-12@2.1
+    - run: ./gradlew build
+    - name: Upload artifacts
+      uses: skx/github-action-publish-binaries@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        args: 'app/build/outputs/apk/release/*'
