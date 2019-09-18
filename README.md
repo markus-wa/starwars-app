@@ -5,6 +5,10 @@ Star Wars Android app using https://swapi.co/
 
 - Movies view: https://wireframe.cc/9G6wT7
 
+## APKs
+
+See [releases](https://github.com/markus-wa/starwars-app/releases) page.
+
 ## Screenshots
 
 ### Movies view
